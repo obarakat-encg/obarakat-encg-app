@@ -1,0 +1,11 @@
+[
+  {
+    "origin": [
+      "https://side-hustle-pink.vercel.app",
+      "http://localhost:5173"
+    ],
+    "method": ["GET", "HEAD", "OPTIONS"],
+    "responseHeader": ["Content-Type", "Authorization"],
+    "maxAgeSeconds": 3600
+  }
+]

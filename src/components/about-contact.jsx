@@ -1,0 +1,210 @@
+import React, { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { 
+    FaUserTie, 
+    FaBook, 
+    FaFileAlt, 
+    FaEnvelope,
+    FaLink,
+    FaArrowRight,
+    FaLightbulb,
+    FaCopy,
+    FaCheck
+} from 'react-icons/fa'
+import './styles/about-contact.css'
+
+export default function AboutContact(){
+    const location = useLocation();
+    const [copied, setCopied] = useState(false);
+    
+    useEffect(() => {
+        // Security: Only handle scroll if coming from login page with specific parameters
+        const urlParams = new URLSearchParams(location.search);
+        const scrollTo = urlParams.get('scrollTo');
+        const from = urlParams.get('from');
+        
+        // Validate parameters for security
+        const validScrollTargets = ['contact']; // Whitelist of allowed scroll targets
+        const validSources = ['login']; // Whitelist of allowed source pages
+        
+        if (scrollTo && from && 
+            validScrollTargets.includes(scrollTo) && 
+            validSources.includes(from)) {
+            
+            // Small delay to ensure the component is fully rendered
+            setTimeout(() => {
+                const targetElement = document.getElementById(scrollTo);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Clean up URL parameters after scrolling (optional)
+                    const newUrl = window.location.pathname;
+                    window.history.replaceState({}, '', newUrl);
+                }
+            }, 100);
+        }
+    }, [location]);
+
+    const copyEmailToClipboard = async () => {
+        const email = 'o.barakat@uiz.ac.ma';
+        
+        try {
+            await navigator.clipboard.writeText(email);
+            setCopied(true);
+            
+            // Reset the copied state after 2 seconds
+            setTimeout(() => {
+                setCopied(false);
+            }, 2000);
+        } catch (err) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = email;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            setCopied(true);
+            setTimeout(() => {
+                setCopied(false);
+            }, 2000);
+        }
+    };
+
+    return (
+        <motion.div 
+            className="ac-page-container"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+        >
+            <section className="ac-hero-section">
+                <div className="ac-hero-content">
+                    <div className="ac-profile-card">
+                        <div className="ac-profile-image-container">
+                            <img src='/pfp_obarakat.png' alt='pfp' className='ac-profile-image'/>
+                        </div>
+                        <div className="ac-profile-info">
+                            <h1 className="ac-professor-name">Dr. Ouafa Barakat</h1>
+                            <p className="ac-professor-title">Enseignante Chercheur</p>
+                            <p className="ac-university">ENCG - Agadir</p>
+                            <p className="ac-university">Spécialité : Gestion</p>
+                        </div>
+                    </div>
+                    
+                    <div className="ac-intro-text">
+                        <h2>Bienvenue sur mon espace pédagogique</h2>
+                        <p>
+                            Cet espace est dédié au partage de ressources pédagogiques avec mes étudiants. 
+                            Vous y trouverez l'ensemble de mes cours, travaux dirigés, et supports de formation 
+                            en marketing et comportement du consommateur.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section className="ac-background-section">
+                <div className="ac-background-content">
+                    <div className="ac-background-text">
+                        <h2>Parcours académique</h2>
+                        <div className="ac-education-item">
+                            <h4>Diplôme d’Habilitation Universitaire en Sciences de Gestion</h4>
+                            <p>Titulaire d’un Diplôme d’Habilitation Universitaire en Sciences de Gestion- ENCG Agadir/Université Ibn Zohr</p>
+                        </div>
+                        <div className="ac-education-item">
+                            <h4>DESS en Management de La Qualité</h4>
+                            <p>Titulaire d’un DESS en Management de La Qualité- Ecole Nationale des Sciences Appliquées d’Agadir (ENSA). Université Ibn Zohr</p>
+                        </div>
+                        <div className="ac-education-item">
+                            <h4>Doctorat National en Sciences de Gestion</h4>
+                            <p>Titulaire d’un Doctorat National en Sciences de Gestion- ENCG-Agadir sous le thème « Facteurs clés de succès en gestion des projets d’infrastructures de base émanant des plans communaux de développement dans la province de Taroudant ». Mention très honorable avec félicitations du jury.</p>
+                        </div>
+                        
+                    </div>
+                    
+                    <div className="ac-research-interests">
+                        <h3><FaLightbulb /> Domaine de recherche</h3>
+                        <ul>
+                            <li>Management de la Qualité</li>
+                            <li>Innovation managériale et innovation technologique</li>
+                            <li>Management de projet</li>
+                            <li>Audit Qualité</li>
+                            <li>Management Opérationnel</li>
+                            <li>Entrepreneuriat & Montage de projet</li>
+
+                            
+
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section className="ac-contact-section" id="contact">
+                <div className="ac-section-header">
+                    <h2>Contactez-moi</h2>
+                    <p>Pour toute question concernant les cours, les TDs ou pour prendre rendez-vous</p>
+                </div>
+                
+                <div className="ac-contact-content">
+                    <div className="ac-contact-grid">
+                        <div className="ac-info-card">
+                            <div className="ac-card-header">
+                                <div className="ac-card-icon">
+                                    <FaEnvelope />
+                                </div>
+                                <h3>Coordonnées</h3>
+                            </div>
+                            <div className="ac-card-content">
+                                <div className="ac-contact-item">
+                                    <FaEnvelope />
+                                    <div>
+                                        <strong>Email professionnel</strong>
+                                        <div className="ac-email-container">
+                                            <p className='ac-contact-email'>o.barakat@uiz.ac.ma</p>
+                                            <button 
+                                                className={`ac-copy-button ${copied ? 'copied' : ''}`}
+                                                onClick={copyEmailToClipboard}
+                                                title={copied ? 'Copié !' : 'Copier l\'email'}
+                                            >
+                                                {copied ? <FaCheck /> : <FaCopy />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="ac-info-card">
+                            <div className="ac-card-header">
+                                <div className="ac-card-icon">
+                                    <FaLink />
+                                </div>
+                                <h3>Liens utiles</h3>
+                            </div>
+                            <div className="ac-card-content">
+                                <div className="ac-resource-links">
+                                    <Link to="/cours" className="ac-resource-link">
+                                        <FaBook />
+                                        <span>Consulter les cours</span>
+                                        <FaArrowRight />
+                                    </Link>
+                                    <Link to="/td" className="ac-resource-link">
+                                        <FaFileAlt />
+                                        <span>Voir les TDs</span>
+                                        <FaArrowRight />
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </motion.div>
+    )
+}

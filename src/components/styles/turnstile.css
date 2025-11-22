@@ -1,0 +1,31 @@
+.turnstile-widget {
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.turnstile-widget iframe {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Integration with login form */
+.login-form .turnstile-widget {
+  margin: 20px 0;
+  padding: 10px 0;
+}
+
+/* Loading state */
+.turnstile-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 65px;
+  color: #666;
+  font-size: 14px;
+}
+
+.turnstile-loading::before {
+  content: "Chargement de la vérification...";
+}
