@@ -50,6 +50,8 @@ body {
   width: 300%;
   height: 100%;
   transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .carousel-slide {
@@ -72,11 +74,19 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transition: transform 0.8s ease-out;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
-.carousel-slide:hover .slide-background {
-  transform: scale(1.05);
+/* Disable hover scale on mobile for performance */
+@media (min-width: 1024px) {
+  .slide-background {
+    transition: transform 0.8s ease-out;
+  }
+
+  .carousel-slide:hover .slide-background {
+    transform: scale(1.05) translateZ(0);
+  }
 }
 
 /* Modern Overlay */
@@ -86,9 +96,8 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: black;
-  opacity: 0.2;
-  backdrop-filter: blur(1px);
+  background: rgba(0, 0, 0, 0.2);
+  /* Removed backdrop-filter for mobile performance */
 }
 
 /* Modern Content Layout */
@@ -113,9 +122,8 @@ body {
 /* Modern Typography */
 .slide-badge {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   padding: 10px 20px;
   border-radius: 50px;
@@ -125,6 +133,7 @@ body {
   letter-spacing: 0.5px;
   text-transform: uppercase;
   animation: slideInUp 1s ease-out 0.2s both;
+  /* Removed backdrop-filter for mobile performance */
 }
 
 .slide-title {
@@ -132,12 +141,20 @@ body {
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f6ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
   text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   animation: slideInUp 1s ease-out 0.4s both;
+  /* Simplified from gradient text for mobile performance */
+}
+
+/* Apply gradient only on desktop */
+@media (min-width: 1024px) {
+  .slide-title {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 .slide-description {
@@ -205,27 +222,36 @@ body {
   background: rgba(255, 255, 255, 0.95);
   color: #1f2937;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(20px);
+  /* Removed backdrop-filter for mobile performance */
 }
 
 .slide-btn-primary:hover {
   background: white;
-  transform: translateY(-3px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
   color: #1f2937;
 }
 
+/* Only apply transform on desktop */
+@media (min-width: 1024px) {
+  .slide-btn-primary:hover {
+    transform: translateY(-3px);
+  }
+
+  .slide-btn-secondary:hover {
+    transform: translateY(-3px);
+  }
+}
+
 .slide-btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(20px);
+  /* Removed backdrop-filter for mobile performance */
 }
 
 .slide-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   border-color: rgba(255, 255, 255, 0.5);
-  transform: translateY(-3px);
   color: white;
 }
 
@@ -318,28 +344,44 @@ body {
   transform: scale(1.1);
 }
 
-/* Animations */
+/* Animations - Optimized for mobile */
 @keyframes slideContentIn {
   from {
     opacity: 0;
-    transform: translateY(50px);
+    transform: translate3d(0, 50px, 0);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes slideInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translate3d(0, 30px, 0);
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Disable animations on mobile for better performance */
+@media (max-width: 768px) {
+  .slide-text-content {
+    animation: none;
+  }
+
+  .slide-badge,
+  .slide-title,
+  .slide-description,
+  .slide-buttons {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -497,8 +539,7 @@ body {
 }
 
 .preview-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   padding: 32px;
@@ -506,6 +547,7 @@ body {
   transition: all 0.5s ease;
   position: relative;
   overflow: hidden;
+  /* Removed backdrop-filter for mobile performance */
 }
 
 .preview-card::before {
@@ -971,6 +1013,26 @@ body {
   .cta-content {
     flex-direction: column;
     text-align: center;
+  }
+
+  /* Disable expensive hover effects on mobile */
+  .preview-card:hover,
+  .cta-card:hover,
+  .featured-card:hover {
+    transform: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Simplify transitions on mobile */
+  .preview-card,
+  .cta-card,
+  .featured-card {
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* Disable button hover animations */
+  .slide-btn::before {
+    display: none;
   }
 }
 

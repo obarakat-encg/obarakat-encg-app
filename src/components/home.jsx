@@ -137,11 +137,12 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(autoPlay);
   const [isDragging, setIsDragging] = useState(false);
-  const [touchStartX, setTouchStartX] = useState(0);
   const [touchDeltaX, setTouchDeltaX] = useState(0);
   const containerRef = React.useRef(null);
+  const touchStartXRef = React.useRef(0);
+  const rafRef = React.useRef(null);
 
-  const slides = [
+  const slides = React.useMemo(() => [
     {
       id: 'welcome',
       type: 'welcome',
@@ -182,7 +183,7 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
         { text: 'Découvrir les TDs', link: '/td', icon: FaFilePowerpoint, primary: true }
       ]
     }
-  ];
+  ], [role]);
 
   useEffect(() => {
     let interval;
@@ -195,6 +196,10 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
 
     return () => {
       if (interval) clearInterval(interval);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
     };
   }, [isAutoPlaying, autoPlayInterval, slides.length]);
 
@@ -218,22 +223,35 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
     setIsAutoPlaying(autoPlay);
   };
 
-  const onTouchStart = (e) => {
+  const onTouchStart = React.useCallback((e) => {
     if (!e.touches || e.touches.length === 0) return;
     setIsDragging(true);
     setIsAutoPlaying(false);
-    setTouchStartX(e.touches[0].clientX);
+    touchStartXRef.current = e.touches[0].clientX;
     setTouchDeltaX(0);
-  };
+  }, []);
 
-  const onTouchMove = (e) => {
+  const onTouchMove = React.useCallback((e) => {
     if (!isDragging || !e.touches || e.touches.length === 0) return;
-    const currentX = e.touches[0].clientX;
-    setTouchDeltaX(currentX - touchStartX);
-  };
 
-  const onTouchEnd = () => {
+    // Use RAF to throttle updates for better performance
+    if (rafRef.current) return;
+
+    rafRef.current = requestAnimationFrame(() => {
+      const currentX = e.touches[0].clientX;
+      setTouchDeltaX(currentX - touchStartXRef.current);
+      rafRef.current = null;
+    });
+  }, [isDragging]);
+
+  const onTouchEnd = React.useCallback(() => {
     if (!isDragging) return;
+
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+
     const threshold = 50; // px
     if (Math.abs(touchDeltaX) > threshold) {
       if (touchDeltaX > 0) {
@@ -245,7 +263,7 @@ function HeroCarousel({ autoPlay = true, autoPlayInterval = 3000, role }) {
     setIsDragging(false);
     setTouchDeltaX(0);
     setIsAutoPlaying(autoPlay);
-  };
+  }, [isDragging, touchDeltaX, autoPlay]);
 
   return (
     <div
@@ -425,12 +443,12 @@ export default function Home() {
   }, []);
 
   return (
-    <motion.div 
+    <motion.div
       className="container"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.3, ease: 'easeInOut'}}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
     >
       <HeroCarousel autoPlay={true} autoPlayInterval={6000} role={role} />
 
