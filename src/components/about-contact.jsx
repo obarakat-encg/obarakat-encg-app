@@ -103,6 +103,7 @@ export default function AboutContact(){
                         <p>
                             Cet espace est dédié au partage de ressources pédagogiques avec mes étudiants. 
                             Vous y trouverez l'ensemble de mes cours, travaux dirigés, et supports de formation.
+                            Management de projet & management de la qualité 
                         </p>
                     </div>
                 </div>
