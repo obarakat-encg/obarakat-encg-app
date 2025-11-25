@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { 
@@ -102,7 +102,8 @@ export default function AboutContact(){
                         <h2>A propos</h2>
                         <p>
                             Cet espace est dédié au partage de ressources pédagogiques avec mes étudiants. 
-                            Vous y trouverez l'ensemble de mes cours, travaux dirigés, et supports de formation.
+                            Vous y trouverez l'ensemble de mes cours, travaux dirigés, et supports de formation 
+                            en marketing et comportement du consommateur.
                         </p>
                     </div>
                 </div>

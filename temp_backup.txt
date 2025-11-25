@@ -102,7 +102,8 @@ export default function AboutContact(){
                         <h2>A propos</h2>
                         <p>
                             Cet espace est dédié au partage de ressources pédagogiques avec mes étudiants. 
-                            Vous y trouverez l'ensemble de mes cours, travaux dirigés, et supports de formation.
+                            Vous y trouverez l'ensemble de mes cours, travaux dirigés, et supports de formation 
+                            en marketing et comportement du consommateur.
                         </p>
                     </div>
                 </div>
@@ -113,16 +114,16 @@ export default function AboutContact(){
                     <div className="ac-background-text">
                         <h2>Parcours académique</h2>
                         <div className="ac-education-item">
-                            <h4>Diplôme d'Habilitation Universitaire en Sciences de Gestion</h4>
-                            <p>Titulaire d'un Diplôme d'Habilitation Universitaire en Sciences de Gestion- ENCG Agadir/Université Ibn Zohr</p>
-                        </div>
-                        <div className="ac-education-item">
-                            <h4>Doctorat National en Sciences de Gestion</h4>
-                            <p>Titulaire d'un Doctorat National en Sciences de Gestion- ENCG-Agadir sous le thème « Facteurs clés de succès en gestion des projets d'infrastructures de base émanant des plans communaux de développement dans la province de Taroudant ». Mention très honorable avec félicitations du jury.</p>
+                            <h4>Diplôme d’Habilitation Universitaire en Sciences de Gestion</h4>
+                            <p>Titulaire d’un Diplôme d’Habilitation Universitaire en Sciences de Gestion- ENCG Agadir/Université Ibn Zohr</p>
                         </div>
                         <div className="ac-education-item">
                             <h4>DESS en Management de La Qualité</h4>
-                            <p>Titulaire d'un DESS en Management de La Qualité- Ecole Nationale des Sciences Appliquées d'Agadir (ENSA). Université Ibn Zohr</p>
+                            <p>Titulaire d’un DESS en Management de La Qualité- Ecole Nationale des Sciences Appliquées d’Agadir (ENSA). Université Ibn Zohr</p>
+                        </div>
+                        <div className="ac-education-item">
+                            <h4>Doctorat National en Sciences de Gestion</h4>
+                            <p>Titulaire d’un Doctorat National en Sciences de Gestion- ENCG-Agadir sous le thème « Facteurs clés de succès en gestion des projets d’infrastructures de base émanant des plans communaux de développement dans la province de Taroudant ». Mention très honorable avec félicitations du jury.</p>
                         </div>
                         
                     </div>
