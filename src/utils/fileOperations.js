@@ -5,10 +5,19 @@
 
 import { database } from '../firebase.js';
 import { ref, get } from 'firebase/database';
+import { dataCache } from './cache.js';
 
 // Get public files for homepage preview
 export const fileOperations = {
   async getPublicFiles(type) {
+    const cacheKey = `public_files_${type}`;
+    
+    // Check cache first
+    const cached = dataCache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+    
     try {
       const files = [];
       
@@ -48,11 +57,16 @@ export const fileOperations = {
       }
       
       // Sort by date, newest first
-      return files.sort((a, b) => {
+      const sortedFiles = files.sort((a, b) => {
         const dateA = new Date(a.uploadedAt || 0);
         const dateB = new Date(b.uploadedAt || 0);
         return dateB - dateA;
       });
+      
+      // Cache for 5 minutes
+      dataCache.set(cacheKey, sortedFiles, 300000);
+      
+      return sortedFiles;
     } catch (error) {
       console.error(`Error getting ${type} files:`, error);
       return [];
@@ -63,6 +77,14 @@ export const fileOperations = {
 // Seminar operations (works with database directly)
 export const seminarOperations = {
   async getSeminars() {
+    const cacheKey = 'seminars_list';
+    
+    // Check cache first
+    const cached = dataCache.get(cacheKey);
+    if (cached) {
+      return cached;
+    }
+    
     try {
       const seminarsRef = ref(database, 'seminar');
       const snapshot = await get(seminarsRef);
@@ -82,7 +104,12 @@ export const seminarOperations = {
       }
 
       // Sort by date
-      return seminars.sort((a, b) => new Date(b.date) - new Date(a.date));
+      const sortedSeminars = seminars.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      // Cache for 10 minutes
+      dataCache.set(cacheKey, sortedSeminars, 600000);
+      
+      return sortedSeminars;
     } catch (error) {
       console.error('Error fetching seminars:', error);
       return [];

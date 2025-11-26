@@ -5,6 +5,7 @@ import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "fi
 import { storage } from "../firebase";
 import { FaUpload, FaTrash, FaFile, FaDownload, FaPlus, FaTimes, FaSpinner, FaLink } from "react-icons/fa";
 import { useNotification } from "./NotificationContext";
+import { dataCache } from "../utils/cache";
 import "./styles/FileManager.css";
 
 const FileManagerWithModules = ({ type, title, onFileChange }) => {
@@ -144,6 +145,9 @@ const FileManagerWithModules = ({ type, title, onFileChange }) => {
         showSuccess("Lien ajouté avec succès");
       }
 
+      // Clear relevant caches
+      dataCache.clearPattern(`^(public_files|modules|resources)_(${type})`);
+
       // Reset form
       setUploadFile(null);
       setUploadFileName("");
@@ -185,6 +189,9 @@ const FileManagerWithModules = ({ type, title, onFileChange }) => {
       // Delete from database
       const resourceRef = ref(database, `resources/${type}/${selectedYear}/${selectedModule}/${resource.key}`);
       await set(resourceRef, null);
+
+      // Clear relevant caches
+      dataCache.clearPattern(`^(public_files|modules|resources)_(${type})`);
 
       showSuccess("Ressource supprimée avec succès");
       await loadResources();

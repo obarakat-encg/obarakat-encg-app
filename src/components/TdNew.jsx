@@ -6,6 +6,7 @@ import { database } from "../firebase";
 import { Context } from "./context";
 import { useNotification } from "./NotificationContext";
 import LoginRequiredModal from "./LoginRequiredModal";
+import { dataCache } from "../utils/cache";
 import { FaFolder, FaFile, FaLink, FaDownload, FaSpinner, FaArrowLeft, FaChevronRight } from "react-icons/fa";
 import "./styles/cours.css";
 
@@ -49,6 +50,15 @@ const TdNew = () => {
   const loadModules = async () => {
     if (!currentYear) return;
     
+    const cacheKey = `modules_td_${currentYear.id}`;
+    const cached = dataCache.get(cacheKey);
+    
+    if (cached) {
+      setModules(cached);
+      setLoading(false);
+      return;
+    }
+    
     setLoading(true);
     try {
       const tdRef = ref(database, `resources/td/${currentYear.id}`);
@@ -67,6 +77,7 @@ const TdNew = () => {
           return a.localeCompare(b);
         });
         
+        dataCache.set(cacheKey, sortedModules, 600000); // Cache for 10 minutes
         setModules(sortedModules);
       } else {
         setModules([]);
@@ -90,6 +101,15 @@ const TdNew = () => {
   const loadResources = async () => {
     if (!selectedModule || !currentYear) return;
     
+    const cacheKey = `resources_td_${currentYear.id}_${selectedModule}`;
+    const cached = dataCache.get(cacheKey);
+    
+    if (cached) {
+      setResources(cached);
+      setLoadingResources(false);
+      return;
+    }
+    
     try {
       const resourcesRef = ref(database, `resources/td/${currentYear.id}/${selectedModule}`);
       const snapshot = await get(resourcesRef);
@@ -100,6 +120,8 @@ const TdNew = () => {
         const resourcesList = Object.entries(data)
           .filter(([key, value]) => key !== '_placeholder' && value && value.id)
           .map(([key, value]) => ({ ...value, key }));
+        
+        dataCache.set(cacheKey, resourcesList, 600000); // Cache for 10 minutes
         setResources(resourcesList);
       } else {
         setResources([]);

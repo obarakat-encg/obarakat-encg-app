@@ -12,6 +12,7 @@ import {
   FaChevronRight,
 } from "react-icons/fa";
 import { fileOperations } from "../utils/fileOperations";
+import { dataCache } from "../utils/cache";
 import { Context } from "./context";
 import EncgFixed from "../assets/EncgFixed.png";
 import TdImage from "../assets/tdimage.png";
@@ -70,6 +71,8 @@ function usePreviewData() {
 
     const handleFilesUpdated = (e) => {
       if (e.detail.type === 'cours' || e.detail.type === 'td') {
+        // Clear relevant caches
+        dataCache.clearPattern(`^(public_files|modules|resources)_(${e.detail.type})`);
         load();
       }
     };

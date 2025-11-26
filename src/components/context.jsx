@@ -41,20 +41,25 @@ export function ContextProvider({children}){
             setAuthState(prev => prev + 1);
         });
 
-        // Activity tracker - update last activity on user interaction
+        // Activity tracker - throttled to reduce localStorage writes
+        let activityTimeout = null;
         const updateActivity = () => {
-            if (role) {
-                localStorage.setItem('encg_last_activity', Date.now().toString());
+            if (role && !activityTimeout) {
+                activityTimeout = setTimeout(() => {
+                    localStorage.setItem('encg_last_activity', Date.now().toString());
+                    activityTimeout = null;
+                }, 30000); // Update max once per 30 seconds
             }
         };
 
         // Track user activity
         window.addEventListener('click', updateActivity);
         window.addEventListener('keydown', updateActivity);
-        window.addEventListener('scroll', updateActivity);
+        window.addEventListener('scroll', updateActivity, { passive: true });
 
         return () => {
             unsubscribe();
+            if (activityTimeout) clearTimeout(activityTimeout);
             window.removeEventListener('click', updateActivity);
             window.removeEventListener('keydown', updateActivity);
             window.removeEventListener('scroll', updateActivity);

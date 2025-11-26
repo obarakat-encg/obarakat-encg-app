@@ -19,8 +19,25 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_MSG_SENDER_ID': JSON.stringify(env.VITE_MSG_SENDER_ID),
       'import.meta.env.VITE_APP_ID': JSON.stringify(env.VITE_APP_ID),
       'import.meta.env.VITE_MEASUREMENT_ID': JSON.stringify(env.VITE_MEASUREMENT_ID),
-
-      
     },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+            'firebase': ['firebase/app', 'firebase/auth', 'firebase/database'],
+            'ui-vendor': ['framer-motion', 'react-icons']
+          }
+        }
+      },
+      chunkSizeWarningLimit: 1000,
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true
+        }
+      }
+    }
   };
 });
